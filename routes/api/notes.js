@@ -1,5 +1,4 @@
-const auth = require('../../middleware/auth');
-const NoteController = require('../../controllers/postController');
+const NoteController = require('../../controllers/noteController');
 var express = require('express');
 var router = express.Router();
 
@@ -10,7 +9,7 @@ var router = express.Router();
     @access    Private 
     */
 
-router.post('/add', auth, NoteController.add_new_post);
+router.post('/add', NoteController.add_new_note);
 
 
 module.exports = router;
