@@ -19,7 +19,7 @@ exports.sign_in = async (req, res) => {
 
     await User.findOne({ email: email }).then(user => {
         if (!user) return res.status(400).json({ error: 'email or password is invalid' });
-        await User.comparePassword(password, user.password, (err, isMatch) => {
+        User.comparePassword(password, user.password, (err, isMatch) => {
             if (err) throw err;
             if (!isMatch) {
                 return res.status(400).json({ error: "Email or Password is invalid" });
@@ -76,7 +76,7 @@ exports.sign_up = async (req, res) => {
             password: password,
         });
 
-        await User.newUser(newUser, (err, user) => {
+        User.newUser(newUser, (err, user) => {
             if (err) return err;
             return res.json({
                 message: "Account created successfully",
@@ -104,9 +104,9 @@ exports.change_user_password = async (req, res) => {
                     error: "User doesn't exist"
                 });
             }
-            await bcrypt.hash(newPassword, 10).then(hashPassword => {
+            bcrypt.hash(newPassword, 10).then(hashPassword => {
                 user.password = hashPassword;
-                await user.save().then(saveUser => {
+                user.save().then(saveUser => {
                     return res.json({
                         message: "Password changed successfully",
                         saveUser,

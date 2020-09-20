@@ -23,8 +23,8 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 
-module.exports.newUser = (newUser, callback) => {
-    bcrypt.hash(newUser.password, 10, (err, hash) => {
+module.exports.newUser = async (newUser, callback) => {
+    await bcrypt.hash(newUser.password, 10, (err, hash) => {
         if (err) throw err;
         newUser.password = hash;  //set hash password
         newUser.save(callback); //create New User
