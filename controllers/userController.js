@@ -64,7 +64,7 @@ exports.sign_up = async (req, res) => {
         });
     }
 
-    if (uspassword.length <= 4) {
+    if (password.length <= 4) {
         return res.status(400).json({
             error: 'Please all fields muts be atleast more than 3 characters'
         });
