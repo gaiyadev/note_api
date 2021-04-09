@@ -12,13 +12,13 @@ var usersRouter = require("./routes/api/users");
 var notesRouter = require("./routes/api/notes");
 app.use(cors());
 
-var app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+var app = express();
 
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
