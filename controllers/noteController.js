@@ -1,6 +1,7 @@
 const { findOne } = require("../models/note");
 const Note = require("../models/note");
 
+// Add new
 exports.add_new_note = async (req, res) => {
   const { title, body } = req.body;
 
@@ -30,6 +31,17 @@ exports.add_new_note = async (req, res) => {
 exports.edit_note = async (req, res) => {
   const id = req.params.noteId;
   const { title, body } = req.body;
+  if (!title) {
+    return res.status(400).json({
+      error: "Title is required",
+    });
+  }
+  if (!body) {
+    return res.status(400).json({
+      error: "Body is required",
+    });
+  }
+
   await Note.findByIdAndUpdate(id)
     .then((note) => {
       if (!note) {
