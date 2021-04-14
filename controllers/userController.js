@@ -67,12 +67,12 @@ exports.sign_up = async (req, res) => {
   const { email, password } = req.body;
   if (!email) {
     return res.status(400).json({
-      error: "Please all fields are required",
+      error: "Please email fields are required",
     });
   }
   if (!password) {
     return res.status(400).json({
-      error: "Please all fields are required",
+      error: "Please password are required",
     });
   }
   if (password.length <= 4) {
