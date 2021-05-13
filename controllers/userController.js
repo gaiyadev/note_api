@@ -115,7 +115,7 @@ exports.sign_up = async (req, res) => {
  * @param {*} res
  */
 exports.change_user_password = async (req, res) => {
-  const newPassword = req.body.password;
+  const { newPassword } = req.body;
   const { _id } = req.user;
   await User.findOne({ _id: _id })
     .then((user) => {
@@ -192,16 +192,14 @@ exports.update_profile = async (req, res) => {
   }
 };
 
-
 // all post count
 
-exports.total_post = (req, res) => {
-    const { _id } = req.user;
+exports.total_post = async (req, res) => {
+  const { _id } = req.user;
   const posts = await Note.find({ _id: _id }).count().exec();
 
   if (!posts) {
-  return  res.status(404).json({error:'No post found'})
+    return res.status(404).json({ error: "No post found" });
   }
-return  res.json({ totalPosts: posts });
-
-}
+  return res.json({ totalPosts: posts });
+};
