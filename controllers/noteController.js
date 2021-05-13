@@ -4,6 +4,13 @@ const Note = require("../models/note");
 // Add new
 exports.add_new_note = async (req, res) => {
   const { title, body } = req.body;
+  const { _id } = req.user;
+
+  if (!_id) {
+    return res.status(403).json({
+      error: "not allowed",
+    });
+  }
 
   if (!title) {
     return res.status(400).json({
@@ -18,6 +25,7 @@ exports.add_new_note = async (req, res) => {
   const newNote = new Note({
     title: title,
     body: body,
+    createdBy: _id,
   });
   await Note.newNote(newNote, (err, note) => {
     if (err) return err;
@@ -28,6 +36,7 @@ exports.add_new_note = async (req, res) => {
   });
 };
 
+// edit note
 exports.edit_note = async (req, res) => {
   const id = req.params.noteId;
   const { title, body } = req.body;
@@ -53,7 +62,7 @@ exports.edit_note = async (req, res) => {
       note.body = body;
       note.save();
       return res.json({
-        message: "Note deleted successfully",
+        message: "Note updated successfully",
         note,
       });
     })
@@ -63,6 +72,8 @@ exports.edit_note = async (req, res) => {
       });
     });
 };
+
+// delete note
 exports.delete_note = async (req, res) => {
   const id = req.params.noteId;
   await Note.findByIdAndDelete(id)
@@ -84,6 +95,8 @@ exports.delete_note = async (req, res) => {
     });
 };
 
+// all notes fetch
+
 exports.get_all_notes = async (req, res) => {
   await Note.find()
     .then((notes) => {
@@ -103,8 +116,10 @@ exports.get_all_notes = async (req, res) => {
     });
 };
 
+// get note by id
 exports.note_get_one = (req, res) => {
-  Note.findById(req.params.id)
+  const id = req.params.id;
+  Note.findById(id)
     .then((item) =>
       res.status(200).json({
         success: true,
@@ -117,4 +132,16 @@ exports.note_get_one = (req, res) => {
         err,
       })
     );
+};
+
+// get a user note
+exports.get_all_user_notes = async (req, res) => {
+  const { _id } = req.user;
+  const notes = await Note.find({ createdBy: _id });
+  if (!notes) {
+    return res.json({ error: "Post not found" });
+  }
+  return res.status(200).json({
+    notes,
+  });
 };

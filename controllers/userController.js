@@ -2,6 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const bcrypt = require("bcrypt");
+const Note = require("../models/note");
 
 /*
  * *Sign in a new user
@@ -13,12 +14,12 @@ exports.sign_in = async (req, res) => {
 
   if (!email) {
     return res.status(400).json({
-      error: "Please email fields is required",
+      error: "Email is required",
     });
   }
   if (!password) {
     return res.status(400).json({
-      error: "Please password fields is required",
+      error: "Password is required",
     });
   }
 
@@ -32,7 +33,7 @@ exports.sign_in = async (req, res) => {
       } else {
         // success login ... Generating jwt for auth
         jwt.sign(
-          { _id: user._id, email: user.email, name: user.name },
+          { _id: user._id, email: user.email, username: user.username },
           config.get("MD_SECRET_KEY"),
           {
             expiresIn: 3600,
@@ -44,7 +45,7 @@ exports.sign_in = async (req, res) => {
               user: {
                 _id: user._id,
                 email: user.email,
-                username: user.name,
+                username: user.username,
               },
               message: "Sign in successfully",
             });
@@ -64,15 +65,21 @@ exports.sign_in = async (req, res) => {
  *
  */
 exports.sign_up = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
+
+  if (!username) {
+    return res.status(400).json({
+      error: "Username is required",
+    });
+  }
   if (!email) {
     return res.status(400).json({
-      error: "Please email field is required",
+      error: "Email field is required",
     });
   }
   if (!password) {
     return res.status(400).json({
-      error: "Please password field is required",
+      error: "Password is required",
     });
   }
   if (password.length <= 4) {
@@ -84,6 +91,7 @@ exports.sign_up = async (req, res) => {
     .then((user) => {
       if (user) return res.status(400).json({ error: "User already exist" });
       const newUser = new User({
+        username: username,
         email: email,
         password: password,
       });
@@ -108,10 +116,11 @@ exports.sign_up = async (req, res) => {
  */
 exports.change_user_password = async (req, res) => {
   const newPassword = req.body.password;
-  await User.findOne({ _id: req.params.id })
+  const { _id } = req.user;
+  await User.findOne({ _id: _id })
     .then((user) => {
       if (!user) {
-        return res.status(422).json({
+        return res.status(403).json({
           error: "User doesn't exist",
         });
       }
@@ -147,3 +156,52 @@ exports.get_user_by_id = async (req, res) => {
       });
     });
 };
+
+// USER PROFILE
+exports.get_user_profile = async (req, res) => {
+  const { _id } = req.user;
+  await User.findOne({ _id: _id })
+    .then((user) => {
+      return res.json({
+        user: user,
+      });
+    })
+    .catch(() => {
+      return res.status(404).json({
+        message: "No user found",
+      });
+    });
+};
+
+// updateb profile
+exports.update_profile = async (req, res) => {
+  const { username, email } = req.body;
+  const { _id } = req.user;
+  try {
+    const user = await User.findByIdAndUpdate(_id);
+    if (!user)
+      return res.status(404).json({
+        message: "User not found",
+      });
+    user.username = username;
+    user.email = email;
+    const saved = await user.save();
+    return res.json({ user: saved });
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+// all post count
+
+exports.total_post = (req, res) => {
+    const { _id } = req.user;
+  const posts = await Note.find({ _id: _id }).count().exec();
+
+  if (!posts) {
+  return  res.status(404).json({error:'No post found'})
+  }
+return  res.json({ totalPosts: posts });
+
+}
