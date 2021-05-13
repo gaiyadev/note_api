@@ -34,6 +34,6 @@ router.get("/", auth, NoteController.get_all_notes);
     */
 router.get("/:id", auth, NoteController.note_get_one);
 
-router.get("/posts", auth, NoteController.get_all_user_notes);
+router.get("/all/posts", auth, NoteController.get_all_user_notes);
 
 module.exports = router;

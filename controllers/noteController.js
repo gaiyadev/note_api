@@ -74,8 +74,8 @@ exports.edit_note = async (req, res) => {
 
 // delete note
 exports.delete_note = async (req, res) => {
-  const id = req.params.noteId;
-  await Note.findByIdAndDelete(id)
+  const { noteId } = req.params;
+  await Note.findByIdAndDelete(noteId)
     .then((note) => {
       if (!note) {
         return res.status(400).json({
@@ -84,7 +84,6 @@ exports.delete_note = async (req, res) => {
       }
       return res.json({
         message: "Note deleted successfully",
-        note,
       });
     })
     .catch((err) => {

@@ -116,6 +116,9 @@ exports.sign_up = async (req, res) => {
  */
 exports.change_user_password = async (req, res) => {
   const { newPassword } = req.body;
+  if (!newPassword) {
+    return res.json({ error: "Password is required" });
+  }
   const { _id } = req.user;
   await User.findOne({ _id: _id })
     .then((user) => {
@@ -177,6 +180,16 @@ exports.get_user_profile = async (req, res) => {
 exports.update_profile = async (req, res) => {
   const { username, email } = req.body;
   const { _id } = req.user;
+  if (!email) {
+    return res.status(400).json({
+      error: "Email is required",
+    });
+  }
+  if (!username) {
+    return res.status(400).json({
+      error: "Username is required",
+    });
+  }
   try {
     const user = await User.findByIdAndUpdate(_id);
     if (!user)
@@ -198,8 +211,5 @@ exports.total_post = async (req, res) => {
   const { _id } = req.user;
   const posts = await Note.find({ _id: _id }).count().exec();
 
-  if (!posts) {
-    return res.status(404).json({ error: "No post found" });
-  }
   return res.json({ totalPosts: posts });
 };

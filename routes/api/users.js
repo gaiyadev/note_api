@@ -35,10 +35,12 @@ router.get("/:id", auth, UserController.get_user_by_id);
     @access    Public
  */
 
-router.get("/profile", auth, UserController.get_user_profile);
+//  get user profile
+router.get("/user/profile", auth, UserController.get_user_profile);
 
+// update profile
 router.put("/profile", auth, UserController.update_profile);
 
-router.get("/posts", auth, UserController.total_post);
+router.get("/all/posts", auth, UserController.total_post);
 
 module.exports = router;
