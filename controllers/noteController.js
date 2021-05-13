@@ -1,4 +1,3 @@
-const { findOne } = require("../models/note");
 const Note = require("../models/note");
 
 // Add new
