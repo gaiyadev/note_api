@@ -176,7 +176,7 @@ exports.get_user_by_id = async (req, res) => {
     })
     .catch(() => {
       return res.status(404).json({
-        message: "No user found",
+        error: "No user found",
       });
     });
 };
@@ -192,7 +192,7 @@ exports.get_user_profile = async (req, res) => {
     })
     .catch(() => {
       return res.status(404).json({
-        message: "No user found",
+        error: "No user found",
       });
     });
 };
@@ -215,8 +215,16 @@ exports.update_profile = async (req, res) => {
     const user = await User.findByIdAndUpdate(_id);
     if (!user)
       return res.status(404).json({
-        message: "User not found",
+        error: "User not found",
       });
+
+    const exist = await User.findOne({ email });
+    if (exist) {
+      return res.status(404).json({
+        error: "Email already exist",
+      });
+    }
+
     user.username = username;
     user.email = email;
     const saved = await user.save();
