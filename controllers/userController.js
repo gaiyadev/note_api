@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const bcrypt = require("bcrypt");
 const Note = require("../models/note");
+const c = require("config");
 
 /*
  * *Sign in a new user
@@ -136,6 +137,7 @@ exports.change_user_password = async (req, res) => {
       return res.status(400).json({ error: "Password comfirmation fails" });
     }
     const currentPassword = user.password;
+    console.log(currentPassword);
 
     const isMatch = await bcrypt.compare(password, currentPassword);
     if (!isMatch) {
