@@ -218,7 +218,7 @@ exports.update_profile = async (req, res) => {
         error: "User not found",
       });
 
-    const exist = await User.findOne({ email });
+    const exist = await User.findOne({ email: user.email });
     if (exist) {
       return res.status(404).json({
         error: "Email already exist",
