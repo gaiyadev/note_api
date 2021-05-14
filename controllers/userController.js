@@ -115,29 +115,36 @@ exports.sign_up = async (req, res) => {
  * @param {*} res
  */
 exports.change_user_password = async (req, res) => {
-  const { newPassword } = req.body;
-  if (!newPassword) {
-    return res.json({ error: "Password is required" });
-  }
   const { _id } = req.user;
-  await User.findOne({ _id: _id })
-    .then((user) => {
-      if (!user) {
-        return res.status(403).json({
-          error: "User doesn't exist",
-        });
-      }
-      bcrypt.hash(newPassword, 10).then((hashPassword) => {
-        user.password = hashPassword;
-        user.save().then((saveUser) => {
-          return res.json({
-            message: "Password changed successfully",
-            saveUser,
-          });
-        });
+  const { password, newPassword, comfirmPassword } = req.body;
+
+  if (!password) {
+    return res.json({ error: "Current password is required" });
+  }
+  if (!newPassword) {
+    return res.json({ error: "New password is required" });
+  }
+  if (!comfirmPassword) {
+    return res.json({ error: "Password comfirm is required" });
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(_id);
+    if (!user) return res.status(403).json({ error: "User not found" });
+    const currentPassword = user.password;
+    const isMatch = await bcrypt.compare(password, currentPassword);
+    if (isMatch) {
+      return res.status(400).json({
+        error: "New password can not be the same with current password",
       });
-    })
-    .catch((err) => console.log(err));
+    }
+    const hash = await bcrypt.hash(newPassword, 10);
+    user.password = hash; //set hash password
+    const savedPassword = await user.save();
+    return res.json({ user: savedPassword });
+  } catch (err) {
+    throw err;
+  }
 };
 
 /**
