@@ -131,7 +131,12 @@ exports.change_user_password = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(_id);
     if (!user) return res.status(403).json({ error: "User not found" });
+
+    if (newPassword !== comfirmPassword) {
+      return res.status(400).json({ error: "Password comfirmation fails" });
+    }
     const currentPassword = user.password;
+
     const isMatch = await bcrypt.compare(password, currentPassword);
     if (isMatch) {
       return res.status(400).json({
