@@ -212,18 +212,18 @@ exports.update_profile = async (req, res) => {
     });
   }
   try {
-    const user = await User.findByIdAndUpdate(_id);
-    if (!user)
-      return res.status(404).json({
-        error: "User not found",
-      });
-
-    const exist = await User.findOne({ email: user.email });
+    const exist = await User.findOne({ email: email });
     if (exist) {
       return res.status(404).json({
         error: "Email already exist",
       });
     }
+
+    const user = await User.findByIdAndUpdate(_id);
+    if (!user)
+      return res.status(404).json({
+        error: "User not found",
+      });
 
     user.username = username;
     user.email = email;
