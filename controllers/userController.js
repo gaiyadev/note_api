@@ -239,7 +239,7 @@ exports.update_profile = async (req, res) => {
 exports.total_post = async (req, res) => {
   const { _id } = req.user;
 
-  await Note.countDocuments({ _id: _id }, function (err, posts) {
+  await Note.countDocuments({ createdBy: _id }, function (err, posts) {
     return res.status(200).json({ totalPosts: posts });
   });
 };
