@@ -32,7 +32,7 @@ router.get("/", NoteController.get_all_notes);
     @desc      Add a new note
     @access    Private
     */
-router.get("/:id", auth, NoteController.note_get_one);
+router.get("/:id", NoteController.note_get_one);
 
 router.get("/all/posts", auth, NoteController.get_all_user_notes);
 
