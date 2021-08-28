@@ -96,7 +96,7 @@ exports.delete_note = async (req, res) => {
 // all notes fetch
 
 exports.get_all_notes = async (req, res) => {
-  await Note.find()
+  await Note.find().sort("-1")
     .then((notes) => {
       if (!notes) {
         return res.status(400).json({
