@@ -6,7 +6,6 @@ var cors = require("cors");
 
 const config = require("config");
 require("dotenv").config();
-
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/api/users");
 var notesRouter = require("./routes/api/notes");
@@ -22,5 +21,4 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/notes", notesRouter);
-
 module.exports = app;

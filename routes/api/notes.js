@@ -26,7 +26,7 @@ router.delete("/:noteId", auth, NoteController.delete_note);
     @desc      Add a new note
     @access    Private 
     */
-router.get("/", auth, NoteController.get_all_notes);
+router.get("/", NoteController.get_all_notes);
 
 /*  @route     Get /api/notes/45te5tgre
     @desc      Add a new note
