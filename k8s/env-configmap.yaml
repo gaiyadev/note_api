@@ -4,4 +4,3 @@ metadata:
   name: app-config
 data:
   MONGO_URL: mongodb://mongodb-service.default:27017/mydatabase
-  JWT_SECRET: 7t9t3t34vffdfdfjdfjdnfj02ri04r
