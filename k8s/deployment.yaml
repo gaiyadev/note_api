@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: note-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: note-api
+    spec:
+      containers:
+        - name: note-api
+          image: gaiyadev/note-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+          - configMapRef:
+              name: app-config
