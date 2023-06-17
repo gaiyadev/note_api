@@ -1,18 +1,20 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const stackOtp = require("stack-otp");
 
-const ConnectDb = async () => {
-  console.log(stackOtp.specialChars());
-  await mongoose
-    .connect(process.env.MONGO_URL, {
+// Connect to MongoDB
+async function connectToDatabase() {
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
       useFindAndModify: false,
-    })
-    .then(() => console.log("Connected to Database Successfully..."))
-    .catch((err) => console.error("Failed Could not connect to Database", err));
-};
+    });
+    console.log("Connected to MongoDB");
+    // Start your application logic here
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error.stack);
+  }
+}
 
-ConnectDb();
+connectToDatabase();

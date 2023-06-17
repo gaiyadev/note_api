@@ -9,6 +9,7 @@ require("dotenv").config();
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/api/users");
 var notesRouter = require("./routes/api/notes");
+const { log } = require("console");
 
 var app = express();
 app.use(logger("dev"));
@@ -21,4 +22,10 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/notes", notesRouter);
-module.exports = app;
+
+const PORT = 3000
+
+app.listen(PORT, () => {
+console.log("RUNING "+ PORT)
+}) 
+// module.exports = app;
